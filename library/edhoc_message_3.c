@@ -690,35 +690,35 @@ static int comp_prk_4e3m(enum edhoc_role role, struct edhoc_context *ctx,
 			const size_t hash_len =
 				ctx->csuite[ctx->chosen_csuite_idx].hash_length;
 
-			uint8_t salt_4e3m[hash_len];
-			memset(salt_4e3m, 0, sizeof(salt_4e3m));
+			ALLOCATE_ARRAY(uint8_t, salt_4e3m, hash_len);
+			memset(salt_4e3m, 0, ALLOCATE_ARRAY_SIZEOF(salt_4e3m));
 
 			int ret = comp_salt_4e3m(ctx, salt_4e3m,
-						 ARRAY_SIZE(salt_4e3m));
+						 ARRAY_SIZE_VLA(salt_4e3m));
 
 			if (EDHOC_SUCCESS != ret)
 				return EDHOC_ERROR_CRYPTO_FAILURE;
 
 			if (NULL != ctx->logger)
 				ctx->logger(ctx->user_ctx, "SALT_4e3m",
-					    salt_4e3m, ARRAY_SIZE(salt_4e3m));
+					    salt_4e3m, ARRAY_SIZE_VLA(salt_4e3m));
 
 			const size_t ecc_key_len =
 				ctx->csuite[ctx->chosen_csuite_idx]
 					.ecc_key_length;
 
-			uint8_t giy[ecc_key_len];
-			memset(giy, 0, sizeof(giy));
+			ALLOCATE_ARRAY(uint8_t, giy, ecc_key_len);
+			memset(giy, 0, ALLOCATE_ARRAY_SIZEOF(giy));
 
 			ret = comp_giy(role, ctx, auth_cred, pub_key,
-				       pub_key_len, giy, ARRAY_SIZE(giy));
+				       pub_key_len, giy, ARRAY_SIZE_VLA(giy));
 
 			if (EDHOC_SUCCESS != ret)
 				return EDHOC_ERROR_CRYPTO_FAILURE;
 
 			if (NULL != ctx->logger)
 				ctx->logger(ctx->user_ctx, "G_IY", giy,
-					    ARRAY_SIZE(giy));
+					    ARRAY_SIZE_VLA(giy));
 
 			ctx->prk_len =
 				ctx->csuite[ctx->chosen_csuite_idx].hash_length;
@@ -726,7 +726,7 @@ static int comp_prk_4e3m(enum edhoc_role role, struct edhoc_context *ctx,
 			uint8_t key_id[EDHOC_KID_LEN] = { 0 };
 			ret = ctx->keys.generate_key(ctx->user_ctx,
 						     EDHOC_KT_EXTRACT, giy,
-						     ARRAY_SIZE(giy), key_id);
+						     ARRAY_SIZE_VLA(giy), key_id);
 			memset(giy, 0, sizeof(giy));
 
 			if (EDHOC_SUCCESS != ret)
@@ -735,7 +735,7 @@ static int comp_prk_4e3m(enum edhoc_role role, struct edhoc_context *ctx,
 			size_t out_len = 0;
 			ret = ctx->crypto.extract(ctx->user_ctx, key_id,
 						  salt_4e3m,
-						  ARRAY_SIZE(salt_4e3m),
+						  ARRAY_SIZE_VLA(salt_4e3m),
 						  ctx->prk, ctx->prk_len,
 						  &out_len);
 			ctx->keys.destroy_key(ctx->user_ctx, key_id);
@@ -763,35 +763,35 @@ static int comp_prk_4e3m(enum edhoc_role role, struct edhoc_context *ctx,
 			const size_t hash_len =
 				ctx->csuite[ctx->chosen_csuite_idx].hash_length;
 
-			uint8_t salt_4e3m[hash_len];
-			memset(salt_4e3m, 0, sizeof(salt_4e3m));
+			ALLOCATE_ARRAY(uint8_t, salt_4e3m, hash_len);
+			memset(salt_4e3m, 0, ALLOCATE_ARRAY_SIZEOF(salt_4e3m));
 
 			int ret = comp_salt_4e3m(ctx, salt_4e3m,
-						 ARRAY_SIZE(salt_4e3m));
+						 ARRAY_SIZE_VLA(salt_4e3m));
 
 			if (EDHOC_SUCCESS != ret)
 				return EDHOC_ERROR_CRYPTO_FAILURE;
 
 			if (NULL != ctx->logger)
 				ctx->logger(ctx->user_ctx, "SALT_4e3m",
-					    salt_4e3m, ARRAY_SIZE(salt_4e3m));
+					    salt_4e3m, ARRAY_SIZE_VLA(salt_4e3m));
 
 			const size_t ecc_key_len =
 				ctx->csuite[ctx->chosen_csuite_idx]
 					.ecc_key_length;
 
-			uint8_t giy[ecc_key_len];
-			memset(giy, 0, sizeof(giy));
+			ALLOCATE_ARRAY(uint8_t, giy, ecc_key_len);
+			memset(giy, 0, ALLOCATE_ARRAY_SIZEOF(giy));
 
 			ret = comp_giy(role, ctx, auth_cred, pub_key,
-				       pub_key_len, giy, ARRAY_SIZE(giy));
+				       pub_key_len, giy, ARRAY_SIZE_VLA(giy));
 
 			if (EDHOC_SUCCESS != ret)
 				return EDHOC_ERROR_CRYPTO_FAILURE;
 
 			if (NULL != ctx->logger)
 				ctx->logger(ctx->user_ctx, "G_IY", giy,
-					    ARRAY_SIZE(giy));
+					    ARRAY_SIZE_VLA(giy));
 
 			ctx->prk_len =
 				ctx->csuite[ctx->chosen_csuite_idx].hash_length;
@@ -799,8 +799,8 @@ static int comp_prk_4e3m(enum edhoc_role role, struct edhoc_context *ctx,
 			uint8_t key_id[EDHOC_KID_LEN] = { 0 };
 			ret = ctx->keys.generate_key(ctx->user_ctx,
 						     EDHOC_KT_EXTRACT, giy,
-						     ARRAY_SIZE(giy), key_id);
-			memset(giy, 0, sizeof(giy));
+						     ARRAY_SIZE_VLA(giy), key_id);
+			memset(giy, 0, ALLOCATE_ARRAY_SIZEOF(giy));
 
 			if (EDHOC_SUCCESS != ret)
 				return EDHOC_ERROR_CRYPTO_FAILURE;
@@ -808,7 +808,7 @@ static int comp_prk_4e3m(enum edhoc_role role, struct edhoc_context *ctx,
 			size_t out_len = 0;
 			ret = ctx->crypto.extract(ctx->user_ctx, key_id,
 						  salt_4e3m,
-						  ARRAY_SIZE(salt_4e3m),
+						  ARRAY_SIZE_VLA(salt_4e3m),
 						  ctx->prk, ctx->prk_len,
 						  &out_len);
 			ctx->keys.destroy_key(ctx->user_ctx, key_id);
@@ -1229,11 +1229,11 @@ static int comp_mac_3(const struct edhoc_context *ctx,
 	len += cbor_items->buf_len + cbor_bstr_overhead(cbor_items->buf_len);
 	len += cbor_int_mem_req((int32_t)mac_3_len);
 
-	uint8_t info[len];
-	memset(info, 0, sizeof(info));
+	ALLOCATE_ARRAY(uint8_t, info, len);
+	memset(info, 0, ALLOCATE_ARRAY_SIZEOF(info));
 
 	len = 0;
-	ret = cbor_encode_info(info, ARRAY_SIZE(info), &input_info, &len);
+	ret = cbor_encode_info(info, ARRAY_SIZE_VLA(info), &input_info, &len);
 
 	if (ZCBOR_SUCCESS != ret)
 		return EDHOC_ERROR_CBOR_FAILURE;
@@ -1339,12 +1339,12 @@ static int comp_sign_or_mac_3(const struct edhoc_context *ctx,
 					  cbor_items->ead_3_len);
 		len += mac_3_len + cbor_bstr_overhead(mac_3_len);
 
-		uint8_t cose_sign_1_buf[len];
-		memset(cose_sign_1_buf, 0, sizeof(cose_sign_1_buf));
+		ALLOCATE_ARRAY(uint8_t, cose_sign_1_buf, len);
+		memset(cose_sign_1_buf, 0, ALLOCATE_ARRAY_SIZEOF(cose_sign_1_buf));
 
 		len = 0;
 		ret = cbor_encode_sig_structure(cose_sign_1_buf,
-						ARRAY_SIZE(cose_sign_1_buf),
+						ARRAY_SIZE_VLA(cose_sign_1_buf),
 						&cose_sign_1, &len);
 
 		if (ZCBOR_SUCCESS != ret)
@@ -1514,8 +1514,8 @@ static int comp_key_iv_aad(const struct edhoc_context *ctx, uint8_t *key,
 	len += ctx->th_len + cbor_bstr_overhead(ctx->th_len);
 	len += cbor_int_mem_req((int32_t)csuite.aead_key_length);
 
-	uint8_t info[len];
-	memset(info, 0, sizeof(info));
+	ALLOCATE_ARRAY(uint8_t, info, len);
+	memset(info, 0, ALLOCATE_ARRAY_SIZEOF(info));
 
 	/* Generate K_3. */
 	input_info = (struct info){
@@ -1527,7 +1527,7 @@ static int comp_key_iv_aad(const struct edhoc_context *ctx, uint8_t *key,
 
 	memset(info, 0, sizeof(info));
 	len = 0;
-	ret = cbor_encode_info(info, ARRAY_SIZE(info), &input_info, &len);
+	ret = cbor_encode_info(info, ARRAY_SIZE_VLA(info), &input_info, &len);
 
 	if (ZCBOR_SUCCESS != ret)
 		return EDHOC_ERROR_CBOR_FAILURE;
@@ -1556,7 +1556,7 @@ static int comp_key_iv_aad(const struct edhoc_context *ctx, uint8_t *key,
 
 	memset(info, 0, sizeof(info));
 	len = 0;
-	ret = cbor_encode_info(info, ARRAY_SIZE(info), &input_info, &len);
+	ret = cbor_encode_info(info, ARRAY_SIZE_VLA(info), &input_info, &len);
 
 	if (ZCBOR_SUCCESS != ret)
 		return EDHOC_ERROR_CBOR_FAILURE;
@@ -1638,8 +1638,8 @@ static int comp_th_4(struct edhoc_context *ctx,
 	len += ptxt_len;
 	len += cbor_items->cred_i_len;
 
-	uint8_t th_4[len];
-	memset(th_4, 0, sizeof(th_4));
+	ALLOCATE_ARRAY(uint8_t, th_4, len);
+	memset(th_4, 0, ALLOCATE_ARRAY_SIZEOF(th_4));
 
 	/* TH_3. */
 	const struct zcbor_string cbor_th_3 = {
@@ -1649,7 +1649,7 @@ static int comp_th_4(struct edhoc_context *ctx,
 
 	len = 0;
 	ret = cbor_encode_byte_string_type_bstr_type(
-		&th_4[offset], ARRAY_SIZE(th_4), &cbor_th_3, &len);
+		&th_4[offset], ARRAY_SIZE_VLA(th_4), &cbor_th_3, &len);
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_CBOR_FAILURE;
@@ -1664,14 +1664,14 @@ static int comp_th_4(struct edhoc_context *ctx,
 	memcpy(&th_4[offset], cbor_items->cred_i, cbor_items->cred_i_len);
 	offset += cbor_items->cred_i_len;
 
-	if (ARRAY_SIZE(th_4) < offset)
+	if (ARRAY_SIZE_VLA(th_4) < offset)
 		return EDHOC_ERROR_BUFFER_TOO_SMALL;
 
 	/* Calculate TH_4. */
 	ctx->th_len = ctx->csuite[ctx->chosen_csuite_idx].hash_length;
 
 	size_t hash_length = 0;
-	ret = ctx->crypto.hash(ctx->user_ctx, th_4, ARRAY_SIZE(th_4), ctx->th,
+	ret = ctx->crypto.hash(ctx->user_ctx, th_4, ARRAY_SIZE_VLA(th_4), ctx->th,
 			       ctx->th_len, &hash_length);
 
 	if (EDHOC_SUCCESS != ret || ctx->th_len != hash_length)
@@ -1964,12 +1964,12 @@ static int verify_sign_or_mac_3(const struct edhoc_context *ctx,
 					  cbor_items->ead_3_len);
 		len += mac_3_len + cbor_bstr_overhead(mac_3_len);
 
-		uint8_t cose_sign_1_buf[len];
-		memset(cose_sign_1_buf, 0, sizeof(cose_sign_1_buf));
+		ALLOCATE_ARRAY(uint8_t, cose_sign_1_buf, len);
+		memset(cose_sign_1_buf, 0, ALLOCATE_ARRAY_SIZEOF(cose_sign_1_buf));
 
 		len = 0;
 		ret = cbor_encode_sig_structure(cose_sign_1_buf,
-						ARRAY_SIZE(cose_sign_1_buf),
+						ARRAY_SIZE_VLA(cose_sign_1_buf),
 						&cose_sign_1, &len);
 
 		if (ZCBOR_SUCCESS != ret)
@@ -2110,13 +2110,13 @@ static int comp_salt_4e3m(const struct edhoc_context *ctx, uint8_t *salt,
 	len += ctx->th_len + cbor_bstr_overhead(ctx->th_len);
 	len += cbor_int_mem_req((int32_t)hash_len);
 
-	uint8_t info[len];
-	memset(info, 0, sizeof(info));
+	ALLOCATE_ARRAY(uint8_t, info, len);
+	memset(info, 0, ALLOCATE_ARRAY_SIZEOF(info));
 
 	len = 0;
-	ret = cbor_encode_info(info, ARRAY_SIZE(info), &input_info, &len);
+	ret = cbor_encode_info(info, ARRAY_SIZE_VLA(info), &input_info, &len);
 
-	if (ZCBOR_SUCCESS != ret || ARRAY_SIZE(info) != len)
+	if (ZCBOR_SUCCESS != ret || ARRAY_SIZE_VLA(info) != len)
 		return EDHOC_ERROR_CBOR_FAILURE;
 
 	uint8_t key_id[EDHOC_KID_LEN] = { 0 };
@@ -2126,7 +2126,7 @@ static int comp_salt_4e3m(const struct edhoc_context *ctx, uint8_t *salt,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_CRYPTO_FAILURE;
 
-	ret = ctx->crypto.expand(ctx->user_ctx, key_id, info, ARRAY_SIZE(info),
+	ret = ctx->crypto.expand(ctx->user_ctx, key_id, info, ARRAY_SIZE_VLA(info),
 				 salt, salt_len);
 	ctx->keys.destroy_key(ctx->user_ctx, key_id);
 
@@ -2271,11 +2271,11 @@ int edhoc_message_3_compose(struct edhoc_context *ctx, uint8_t *msg_3,
 		return EDHOC_ERROR_CREDENTIALS_FAILURE;
 
 	/* 4. Compute K_3, IV_3 and AAD_3. */
-	uint8_t key[csuite.aead_key_length];
-	memset(key, 0, sizeof(key));
+	ALLOCATE_ARRAY(uint8_t, key, csuite.aead_key_length);
+	memset(key, 0, ALLOCATE_ARRAY_SIZEOF(key));
 
-	uint8_t iv[csuite.aead_iv_length];
-	memset(iv, 0, sizeof(iv));
+	ALLOCATE_ARRAY(uint8_t, iv, csuite.aead_iv_length);
+	memset(iv, 0, ALLOCATE_ARRAY_SIZEOF(iv));
 
 	size_t aad_len = 0;
 	ret = comp_aad_3_len(ctx, &aad_len);
@@ -2283,19 +2283,19 @@ int edhoc_message_3_compose(struct edhoc_context *ctx, uint8_t *msg_3,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_BUFFER_TOO_SMALL;
 
-	uint8_t aad[aad_len];
-	memset(aad, 0, sizeof(aad));
+	ALLOCATE_ARRAY(uint8_t, aad, aad_len);
+	memset(aad, 0, ALLOCATE_ARRAY_SIZEOF(aad));
 
-	ret = comp_key_iv_aad(ctx, key, ARRAY_SIZE(key), iv, ARRAY_SIZE(iv),
-			      aad, ARRAY_SIZE(aad));
+	ret = comp_key_iv_aad(ctx, key, ARRAY_SIZE_VLA(key), iv, ARRAY_SIZE_VLA(iv),
+			      aad, ARRAY_SIZE_VLA(aad));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_CRYPTO_FAILURE;
 
 	if (NULL != ctx->logger) {
-		ctx->logger(ctx->user_ctx, "K_3", key, ARRAY_SIZE(key));
-		ctx->logger(ctx->user_ctx, "IV_3", iv, ARRAY_SIZE(iv));
-		ctx->logger(ctx->user_ctx, "AAD_3", aad, ARRAY_SIZE(aad));
+		ctx->logger(ctx->user_ctx, "K_3", key, ARRAY_SIZE_VLA(key));
+		ctx->logger(ctx->user_ctx, "IV_3", iv, ARRAY_SIZE_VLA(iv));
+		ctx->logger(ctx->user_ctx, "AAD_3", aad, ARRAY_SIZE_VLA(aad));
 	}
 
 	/* 5. Compute PRK_4e3m. */
@@ -2314,8 +2314,8 @@ int edhoc_message_3_compose(struct edhoc_context *ctx, uint8_t *msg_3,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_MAC_3;
 
-	uint8_t mac_3_content[sizeof(struct cbor_items) + context_3_len];
-	memset(mac_3_content, 0, sizeof(mac_3_content));
+	ALLOCATE_ARRAY(uint8_t, mac_3_content, sizeof(struct cbor_items) + context_3_len);
+	memset(mac_3_content, 0, ALLOCATE_ARRAY_SIZEOF(mac_3_content));
 
 	struct cbor_items *cbor_items = (struct cbor_items *)mac_3_content;
 	cbor_items->buf_len = context_3_len;
@@ -2344,16 +2344,16 @@ int edhoc_message_3_compose(struct edhoc_context *ctx, uint8_t *msg_3,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_MAC_3;
 
-	uint8_t mac_3[mac_3_len];
-	memset(mac_3, 0, sizeof(mac_3));
+	ALLOCATE_ARRAY(uint8_t, mac_3, mac_3_len);
+	memset(mac_3, 0, ALLOCATE_ARRAY_SIZEOF(mac_3));
 
-	ret = comp_mac_3(ctx, cbor_items, mac_3, ARRAY_SIZE(mac_3));
+	ret = comp_mac_3(ctx, cbor_items, mac_3, ARRAY_SIZE_VLA(mac_3));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_MAC_3;
 
 	if (NULL != ctx->logger)
-		ctx->logger(ctx->user_ctx, "MAC_3", mac_3, ARRAY_SIZE(mac_3));
+		ctx->logger(ctx->user_ctx, "MAC_3", mac_3, ARRAY_SIZE_VLA(mac_3));
 
 	/* 7. Compute signature if needed (Signature_or_MAC_3). */
 	size_t sign_or_mac_len = 0;
@@ -2362,33 +2362,33 @@ int edhoc_message_3_compose(struct edhoc_context *ctx, uint8_t *msg_3,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_SIGN_OR_MAC_3;
 
-	uint8_t sign[sign_or_mac_len];
-	memset(sign, 0, sizeof(sign));
+	ALLOCATE_ARRAY(uint8_t, sign, sign_or_mac_len);
+	memset(sign, 0, ALLOCATE_ARRAY_SIZEOF(sign));
 
 	ret = comp_sign_or_mac_3(ctx, &auth_creds, cbor_items, mac_3,
-				 ARRAY_SIZE(mac_3), sign, ARRAY_SIZE(sign));
+				 ARRAY_SIZE_VLA(mac_3), sign, ARRAY_SIZE_VLA(sign));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_SIGN_OR_MAC_3;
 
 	if (NULL != ctx->logger)
 		ctx->logger(ctx->user_ctx, "Signature_or_MAC_3", sign,
-			    ARRAY_SIZE(sign));
+			    ARRAY_SIZE_VLA(sign));
 
 	/* 8. Prepare plaintext (PLAINTEXT_3). */
 	size_t plaintext_len = 0;
-	ret = comp_plaintext_3_len(ctx, cbor_items, ARRAY_SIZE(sign),
+	ret = comp_plaintext_3_len(ctx, cbor_items, ARRAY_SIZE_VLA(sign),
 				   &plaintext_len);
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_BUFFER_TOO_SMALL;
 
-	uint8_t plaintext[plaintext_len];
-	memset(plaintext, 0, sizeof(plaintext));
+	ALLOCATE_ARRAY(uint8_t, plaintext, plaintext_len);
+	memset(plaintext, 0, ALLOCATE_ARRAY_SIZEOF(plaintext));
 
 	plaintext_len = 0;
-	ret = prepare_plaintext_3(cbor_items, sign, ARRAY_SIZE(sign), plaintext,
-				  ARRAY_SIZE(plaintext), &plaintext_len);
+	ret = prepare_plaintext_3(cbor_items, sign, ARRAY_SIZE_VLA(sign), plaintext,
+				  ARRAY_SIZE_VLA(plaintext), &plaintext_len);
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_CBOR_FAILURE;
@@ -2399,12 +2399,12 @@ int edhoc_message_3_compose(struct edhoc_context *ctx, uint8_t *msg_3,
 
 	/* 9. Compute ciphertext. */
 	size_t ciphertext_len = 0;
-	uint8_t ciphertext[plaintext_len + csuite.aead_tag_length];
-	memset(ciphertext, 0, sizeof(ciphertext));
+	ALLOCATE_ARRAY(uint8_t, ciphertext, plaintext_len + csuite.aead_tag_length);
+	memset(ciphertext, 0, ALLOCATE_ARRAY_SIZEOF(ciphertext));
 
-	ret = comp_ciphertext(ctx, key, ARRAY_SIZE(key), iv, ARRAY_SIZE(iv),
-			      aad, ARRAY_SIZE(aad), plaintext, plaintext_len,
-			      ciphertext, ARRAY_SIZE(ciphertext),
+	ret = comp_ciphertext(ctx, key, ARRAY_SIZE_VLA(key), iv, ARRAY_SIZE_VLA(iv),
+			      aad, ARRAY_SIZE_VLA(aad), plaintext, plaintext_len,
+			      ciphertext, ARRAY_SIZE_VLA(ciphertext),
 			      &ciphertext_len);
 
 	if (EDHOC_SUCCESS != ret)
@@ -2490,11 +2490,11 @@ int edhoc_message_3_process(struct edhoc_context *ctx, const uint8_t *msg_3,
 		return EDHOC_ERROR_MSG_3_PROCESS_FAILURE;
 
 	/* 3. Compute K_3, IV_3 and AAD_3. */
-	uint8_t key[csuite.aead_key_length];
-	memset(key, 0, sizeof(key));
+	ALLOCATE_ARRAY(uint8_t, key, csuite.aead_key_length);
+	memset(key, 0, ALLOCATE_ARRAY_SIZEOF(key));
 
-	uint8_t iv[csuite.aead_iv_length];
-	memset(iv, 0, sizeof(iv));
+	ALLOCATE_ARRAY(uint8_t, iv, csuite.aead_iv_length);
+	memset(iv, 0, ALLOCATE_ARRAY_SIZEOF(iv));
 
 	size_t aad_len = 0;
 	ret = comp_aad_3_len(ctx, &aad_len);
@@ -2502,39 +2502,39 @@ int edhoc_message_3_process(struct edhoc_context *ctx, const uint8_t *msg_3,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_BUFFER_TOO_SMALL;
 
-	uint8_t aad[aad_len];
-	memset(aad, 0, sizeof(aad));
+	ALLOCATE_ARRAY(uint8_t, aad, aad_len);
+	memset(aad, 0, ALLOCATE_ARRAY_SIZEOF(aad));
 
-	ret = comp_key_iv_aad(ctx, key, ARRAY_SIZE(key), iv, ARRAY_SIZE(iv),
-			      aad, ARRAY_SIZE(aad));
+	ret = comp_key_iv_aad(ctx, key, ARRAY_SIZE_VLA(key), iv, ARRAY_SIZE_VLA(iv),
+			      aad, ARRAY_SIZE_VLA(aad));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_CRYPTO_FAILURE;
 
 	if (NULL != ctx->logger) {
-		ctx->logger(ctx->user_ctx, "K_3", key, ARRAY_SIZE(key));
-		ctx->logger(ctx->user_ctx, "IV_3", iv, ARRAY_SIZE(iv));
-		ctx->logger(ctx->user_ctx, "AAD_3", aad, ARRAY_SIZE(aad));
+		ctx->logger(ctx->user_ctx, "K_3", key, ARRAY_SIZE_VLA(key));
+		ctx->logger(ctx->user_ctx, "IV_3", iv, ARRAY_SIZE_VLA(iv));
+		ctx->logger(ctx->user_ctx, "AAD_3", aad, ARRAY_SIZE_VLA(aad));
 	}
 
 	/* 4. Decrypt ciphertext. */
-	uint8_t ptxt[ctxt_len - csuite.aead_tag_length];
-	memset(ptxt, 0, sizeof(ptxt));
+	ALLOCATE_ARRAY(uint8_t, ptxt, ctxt_len - csuite.aead_tag_length);
+	memset(ptxt, 0, ALLOCATE_ARRAY_SIZEOF(ptxt));
 
-	ret = decrypt_ciphertext(ctx, key, ARRAY_SIZE(key), iv, ARRAY_SIZE(iv),
-				 aad, ARRAY_SIZE(aad), ctxt, ctxt_len, ptxt,
-				 ARRAY_SIZE(ptxt));
+	ret = decrypt_ciphertext(ctx, key, ARRAY_SIZE_VLA(key), iv, ARRAY_SIZE_VLA(iv),
+				 aad, ARRAY_SIZE_VLA(aad), ctxt, ctxt_len, ptxt,
+				 ARRAY_SIZE_VLA(ptxt));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_CRYPTO_FAILURE;
 
 	if (NULL != ctx->logger)
 		ctx->logger(ctx->user_ctx, "PLAINTEXT_3", ptxt,
-			    ARRAY_SIZE(ptxt));
+			    ARRAY_SIZE_VLA(ptxt));
 
 	/* 5. Parse CBOR plaintext (PLAINTEXT_3). */
 	struct plaintext parsed_ptxt = { 0 };
-	ret = parse_plaintext(ctx, ptxt, ARRAY_SIZE(ptxt), &parsed_ptxt);
+	ret = parse_plaintext(ctx, ptxt, ARRAY_SIZE_VLA(ptxt), &parsed_ptxt);
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_CBOR_FAILURE;
@@ -2593,8 +2593,8 @@ int edhoc_message_3_process(struct edhoc_context *ctx, const uint8_t *msg_3,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_MAC_3;
 
-	uint8_t mac_3_content[sizeof(struct cbor_items) + context_3_len];
-	memset(mac_3_content, 0, sizeof(mac_3_content));
+	ALLOCATE_ARRAY(uint8_t, mac_3_content, sizeof(struct cbor_items) + context_3_len);
+	memset(mac_3_content, 0, ALLOCATE_ARRAY_SIZEOF(mac_3_content));
 
 	struct cbor_items *cbor_items = (struct cbor_items *)mac_3_content;
 	cbor_items->buf_len = context_3_len;
@@ -2623,26 +2623,26 @@ int edhoc_message_3_process(struct edhoc_context *ctx, const uint8_t *msg_3,
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_MAC_3;
 
-	uint8_t mac_3[mac_3_len];
-	memset(mac_3, 0, sizeof(mac_3));
+	ALLOCATE_ARRAY(uint8_t, mac_3, mac_3_len);
+	memset(mac_3, 0, ALLOCATE_ARRAY_SIZEOF(mac_3));
 
-	ret = comp_mac_3(ctx, cbor_items, mac_3, ARRAY_SIZE(mac_3));
+	ret = comp_mac_3(ctx, cbor_items, mac_3, ARRAY_SIZE_VLA(mac_3));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_MAC_3;
 
 	if (NULL != ctx->logger)
-		ctx->logger(ctx->user_ctx, "MAC_3", mac_3, ARRAY_SIZE(mac_3));
+		ctx->logger(ctx->user_ctx, "MAC_3", mac_3, ARRAY_SIZE_VLA(mac_3));
 
 	/* 10. Verify Signature_or_MAC_3. */
 	ret = verify_sign_or_mac_3(ctx, cbor_items, &parsed_ptxt, pub_key,
-				   pub_key_len, mac_3, ARRAY_SIZE(mac_3));
+				   pub_key_len, mac_3, ARRAY_SIZE_VLA(mac_3));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_INVALID_SIGN_OR_MAC_3;
 
 	/* 11. Compute transcript hash 4. */
-	ret = comp_th_4(ctx, cbor_items, ptxt, ARRAY_SIZE(ptxt));
+	ret = comp_th_4(ctx, cbor_items, ptxt, ARRAY_SIZE_VLA(ptxt));
 
 	if (EDHOC_SUCCESS != ret)
 		return EDHOC_ERROR_TRANSCRIPT_HASH_FAILURE;

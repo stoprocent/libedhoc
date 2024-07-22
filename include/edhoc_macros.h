@@ -17,10 +17,23 @@
 /* Defines ----------------------------------------------------------------- */
 /* Types and type definitions ---------------------------------------------- */
 
+#if defined(_WIN32) || defined(_MSC_VER)
+    #include <malloc.h>
+    #define ALLOCATE_ARRAY(type, name, size) \
+        type *name = (type*)_alloca(size * sizeof(type)); \
+        size_t name##_size = size * sizeof(type)
+    #define ALLOCATE_ARRAY_SIZEOF(name) name##_size
+#else
+    #define ALLOCATE_ARRAY(type, name, size) \
+        type name[size]
+    #define ALLOCATE_ARRAY_SIZEOF(name) sizeof(name)
+#endif
+
 /**
  * \brief Macro for calculating arrays length.
  */
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+#define ARRAY_SIZE_VLA(x) (ALLOCATE_ARRAY_SIZEOF(x) / sizeof(x[0]))
 
 /**
  * \brief Macro which allows for private access into structure members.
